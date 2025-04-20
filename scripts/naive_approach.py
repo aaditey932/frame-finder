@@ -70,29 +70,7 @@ class NaivePaintingPredictor:
         # Convert to DataFrame
         self.features_df = pd.DataFrame(features_list)
         return self.features_df
-    
-    def save_model(self, model_path='./models/NaivePaintingPredictor.pkl'):
-        """Save the feature database to a pickle file."""
-        os.makedirs(os.path.dirname(model_path), exist_ok=True)
 
-        model_data = {
-            'features_df': self.features_df
-        }
-
-        with open(model_path, 'wb') as f:
-            pickle.dump(model_data, f)
-
-        print(f"Naive model saved to {model_path}")
-
-    def load_model(self, model_path='./models/naive_painting_model.pkl'):
-        """Load the feature database from a pickle file."""
-        with open(model_path, 'rb') as f:
-            model_data = pickle.load(f)
-
-        self.features_df = model_data['features_df']
-        print(f"Naive model loaded from {model_path}")
-
-    
     def identify_painting(self, image):
         """Identify a painting from an image using color histogram distance."""
         if self.features_df is None or len(self.features_df) == 0:
@@ -137,6 +115,27 @@ class NaivePaintingPredictor:
         except Exception as e:
             print(f"Error in identification: {e}")
             return []
+        
+    def save_model(self, model_path='./models/NaivePaintingPredictor.pkl'):
+        """Save the feature database to a pickle file."""
+        os.makedirs(os.path.dirname(model_path), exist_ok=True)
+
+        model_data = {
+            'features_df': self.features_df
+        }
+
+        with open(model_path, 'wb') as f:
+            pickle.dump(model_data, f)
+
+        print(f"Naive model saved to {model_path}")
+
+    def load_model(self, model_path='./models/naive_painting_model.pkl'):
+        """Load the feature database from a pickle file."""
+        with open(model_path, 'rb') as f:
+            model_data = pickle.load(f)
+
+        self.features_df = model_data['features_df']
+        print(f"Naive model loaded from {model_path}")
     
     def evaluate_top_n_accuracy(self, test_dataset, n=5):
         """Evaluate the model using Top-N accuracy."""
@@ -193,7 +192,6 @@ class NaivePaintingPredictor:
         mrr = np.mean(reciprocal_ranks)
         print(f"Mean Reciprocal Rank: {mrr:.4f}")
         return mrr
-
 
 def evaluate_naive_approach():
     """Evaluate the naive approach for painting title prediction."""
