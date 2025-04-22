@@ -120,8 +120,8 @@ def upsert_to_pinecone(
     namespace="ns1"
 )
     print(f"Upserted {len(vectors)} vectors)")
-    
 
+    
 def query_image(
     image_embedding: List[float],
     index: Any,

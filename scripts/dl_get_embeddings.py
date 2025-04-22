@@ -100,7 +100,7 @@ def generate_embeddings_for_dataset(
         
         # Get embedding
         image = Image.open(image_path)
-        embedding = get_image_embedding(image, model, preprocess, device)
+        embedding = get_image_embedding(image, model, preprocess, device
         embeddings.append(embedding)
     
     # Add embeddings to DataFrame
