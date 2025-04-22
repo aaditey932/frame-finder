@@ -10,7 +10,7 @@ from dl_get_database import initialize_pinecone, create_pinecone_index, query_im
 from dl_get_embeddings import load_clip_model, get_image_embedding
 
 # ------------------- Evaluation Script -------------------
-def evaluate_retrieval(test_folder, metadata_df, model, preprocess, device, index, k=5):
+def evaluate_retrieval(test_folder, results_csv, metadata_df, model, preprocess, device, index, k=5):
     recall_scores = []
     hit_scores = []
     avg_precision_scores = []
@@ -77,8 +77,8 @@ def evaluate_retrieval(test_folder, metadata_df, model, preprocess, device, inde
 
     # Save results to CSV
     df = pd.DataFrame(rows)
-    df.to_csv(RESULTS_CSV, index=False)
-    print(f"\n✅ Results saved to {RESULTS_CSV}")
+    df.to_csv(results_csv, index=False)
+    print(f"\n✅ Results saved to {results_csv}")
 
     # Final summary
     print("\n📊 Evaluation Summary")
@@ -103,7 +103,7 @@ def main():
     model, preprocess, device = load_clip_model()
     pc = initialize_pinecone(PINECONE_API_KEY)
     index = create_pinecone_index(pc, INDEX_NAME)
-    evaluate_retrieval(TEST_FOLDER, metadata_df, model, preprocess, device, index, k=TOP_K)
+    evaluate_retrieval(TEST_FOLDER, RESULTS_CSV, metadata_df, model, preprocess, device, index, k=TOP_K)
     
 if __name__ == "__main__":
     main()
