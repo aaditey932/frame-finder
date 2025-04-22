@@ -28,7 +28,7 @@ def load_clip_model(model_name: str = 'RN101', device: Optional[str] = None) -> 
 
 
 def get_image_embedding(
-    image_path: str, 
+    image: Image, 
     model: torch.nn.Module, 
     preprocess, 
     device: str
@@ -47,10 +47,9 @@ def get_image_embedding(
     """
     # Load and preprocess image
     try:
-        image = Image.open(image_path)
         image_input = preprocess(image).unsqueeze(0).to(device)
     except Exception as e:
-        raise ValueError(f"Error processing image {image_path}: {e}")
+        raise ValueError(f"Error processing image: {e}")
     
     # Generate embedding
     with torch.no_grad():
@@ -100,7 +99,8 @@ def generate_embeddings_for_dataset(
             continue
         
         # Get embedding
-        embedding = get_image_embedding(image_path, model, preprocess, device)
+        image = Image.open(image_path)
+        embedding = get_image_embedding(image, model, preprocess, device
         embeddings.append(embedding)
     
     # Add embeddings to DataFrame
@@ -112,7 +112,6 @@ def generate_embeddings_for_dataset(
         print(f"Warning: {len(result_df) - len(valid_df)} images could not be processed")
     
     return valid_df
-
 
 def main():
     """Main function to demonstrate functionality."""

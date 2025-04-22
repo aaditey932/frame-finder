@@ -1,0 +1,11 @@
+filename,ground_truth_title,top1_title,hit@k,recall@k,mAP,top1_similarity_score
+0_test_1.png,Cornelia Street,Cornelia Street,1,1.0,1.0,0.911474
+0_test_2.png,Cornelia Street,Cornelia Street,1,1.0,1.0,0.936854959
+0_test_3.png,Cornelia Street,Cornelia Street,1,1.0,1.0,0.936854959
+0_test_4.png,Cornelia Street,Cornelia Street,1,1.0,1.0,0.936854959
+0_test_5.png,Cornelia Street,Cornelia Street,1,1.0,1.0,0.877606869
+2_test_1.png,Milking the Cow ,Milking the Cow ,1,1.0,1.0,0.762209654
+2_test_2.png,Milking the Cow ,Milking the Cow ,1,1.0,1.0,0.789978445
+2_test_3.png,Milking the Cow ,Milking the Cow ,1,1.0,1.0,0.90390563
+2_test_4.png,Milking the Cow ,Milking the Cow ,1,1.0,1.0,0.979905665
+2_test_5.png,Milking the Cow ,Milking the Cow ,1,1.0,1.0,0.724856317
