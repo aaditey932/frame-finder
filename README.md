@@ -172,7 +172,7 @@ To assess the performance of each approach, we used a test set of user-uploaded 
 Want to see Frame-Finder in action?  
 Upload any painting and get instant recognition and an AI-generated explanation.
 
-👉 **[Launch the App](https://frame-finder-ai.streamlit.app)**
+👉 **[Launch the App](https://ai-frame-finder.streamlit.app)**
 
 ---
 
