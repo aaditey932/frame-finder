@@ -1,0 +1,11 @@
+filename,ground_truth_title,top1_title,hit@k,recall@k,mAP,top1_similarity_score
+0_test_1.png,Cornelia Street,Cornelia Street,1,1.0,1.0,19.000891994932317
+0_test_2.png,Cornelia Street,A Classical Landscape ,0,0.0,0.0,7.7965613648993894
+0_test_3.png,Cornelia Street,St Nicholas,0,0.0,0.0,8.789662192146352
+0_test_4.png,Cornelia Street,A Classical Landscape ,0,0.0,0.0,9.083942108140036
+0_test_5.png,Cornelia Street,St Nicholas,0,0.0,0.0,18.934847034077393
+2_test_1.png,Milking the Cow ,Raznoschitsa ,0,0.0,0.0,9.373046225999133
+2_test_2.png,Milking the Cow ,St Nicholas,0,0.0,0.0,12.65131009821198
+2_test_3.png,Milking the Cow ,Summer Day,0,0.0,0.0,9.322603421634994
+2_test_4.png,Milking the Cow ,Don Quixote,1,1.0,0.3333333333333333,4.497188639215892
+2_test_5.png,Milking the Cow ,Straits of Malacca,0,0.0,0.0,8.200985014729667
