@@ -1,0 +1,2 @@
+Approach,Training_Time,Val_Top1_Accuracy,Val_Top5_Accuracy,Val_MRR,Test_Top1_Accuracy,Test_Top5_Accuracy,Test_MRR
+ML_Traditional,0.9205489158630371,0.0,0.0,0.0,0.1,0.3,0.18333333333333332
