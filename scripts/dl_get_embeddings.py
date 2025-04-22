@@ -114,7 +114,7 @@ def generate_embeddings_for_dataset(
     return valid_df
 
 def main():
-    """Main function to demonstrate functionality."""
+    """Main function to run the script."""
     # Configure parameters
     metadata_path = "./data/wikiart_export/metadata.csv"
     images_dir = "./data/wikiart_export/images"

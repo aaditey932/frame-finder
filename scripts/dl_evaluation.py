@@ -11,6 +11,21 @@ from dl_get_embeddings import load_clip_model, get_image_embedding
 
 # ------------------- Evaluation Script -------------------
 def evaluate_retrieval(test_folder, results_csv, metadata_df, model, preprocess, device, index, k=5):
+    """Evaluate the retrieval performance of the deep learning approach.
+    
+    Args:
+        test_folder (str): Path to folder containing test images
+        results_csv (str): Path to save evaluation results
+        metadata_df (pd.DataFrame): DataFrame containing ground truth metadata
+        model: CLIP model for generating embeddings
+        preprocess: Preprocessing function for CLIP
+        device: Device to run model on (CPU/GPU)
+        index: Pinecone index for similarity search
+        k (int): Top-k results to consider for evaluation
+    
+    Returns:
+        None (saves results to CSV and prints summary)
+    """
     recall_scores = []
     hit_scores = []
     avg_precision_scores = []
@@ -89,6 +104,7 @@ def evaluate_retrieval(test_folder, results_csv, metadata_df, model, preprocess,
     print(f"Average Similarity Score (Top-1): {np.mean(similarity_scores):.4f}")
 
 def main():
+    """Main function to run the script."""
     TEST_FOLDER = "data/raw/testing_images"
     METADATA_PATH = "data/raw/metadata.csv"
     RESULTS_CSV = "data/output/dl_approach_results.csv"

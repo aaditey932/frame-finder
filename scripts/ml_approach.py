@@ -385,7 +385,7 @@ def evaluate_ml_approach(test_folder, predictor, metadata_path, results_csv, k=5
     print(f"Average Similarity Score (Top-1): {np.mean(similarity_scores):.4f}")
 
 def main():
-    # Configuration
+    """Main function to run the script."""
     TEST_FOLDER = "data/raw/testing_images"
     METADATA_PATH = "data/raw/metadata.csv"
     RESULTS_CSV = "data/output/ml_approach_results.csv"

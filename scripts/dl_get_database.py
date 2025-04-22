@@ -172,7 +172,7 @@ def format_query_results(query_response: Dict[str, Any]) -> List[Dict[str, Any]]
 
 
 def main():
-    """Main function to demonstrate functionality."""
+    """Main function to run the script."""
     # Configuration
     PINECONE_API_KEY = os.getenv("PINECONE_API_KEY")
     INDEX_NAME = "frame-finder-database"

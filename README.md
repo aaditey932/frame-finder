@@ -168,6 +168,9 @@ To assess the performance of each approach, we used a test set of user-uploaded 
 - **CLIP + Pinecone** consistently performs best in terms of both accuracy and explanation, making it ideal for real-time art recognition.
 ---
 
+### Deployed App Link
+
+
 ## 🎨 Sample Use Case
 
 1. User uploads a photo of a painting (e.g., taken at a museum)
