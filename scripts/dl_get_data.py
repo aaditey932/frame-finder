@@ -93,8 +93,8 @@ def load_metadata(metadata_path: str) -> pd.DataFrame:
 def main():
     """Main function to run the script."""
     # Configure parameters
-    output_dir = "./data/wikiart_export"
-    num_samples = 30  # Set to None to download the entire dataset
+    output_dir = "./data/raw"
+    num_samples = 50  # Set to None to download the entire dataset
     
     # Download dataset and save
     metadata = download_wikiart_dataset(

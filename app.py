@@ -1,11 +1,13 @@
 import streamlit as st
 from PIL import Image
-import torch
-import clip
 import os
 from openai import OpenAI
-from pinecone import Pinecone
 from dotenv import load_dotenv
+
+from scripts.dl_get_preprocessing import crop_largest_rect_from_pil
+from scripts.dl_get_database import initialize_pinecone, create_pinecone_index, query_image
+from scripts.dl_get_embeddings import load_clip_model, get_image_embedding
+from scripts.dl_get_llm import get_art_explanation
 
 load_dotenv()
 
@@ -16,47 +18,10 @@ INDEX_NAME = "frame-finder-database"
 st.set_page_config(page_title="Frame Finder", page_icon="🎨", layout="wide")
 
 client = OpenAI(api_key=OPENAI_API_KEY)
-pc = Pinecone(api_key=PINECONE_API_KEY)
-index = pc.Index(INDEX_NAME)
+pc = initialize_pinecone(PINECONE_API_KEY)
+index = create_pinecone_index(pc, INDEX_NAME)
 
-@st.cache_resource
-def load_clip():
-    model, preprocess = clip.load("RN101", device="cpu")
-    return model, preprocess
-
-model, preprocess = load_clip()
-
-def get_image_embedding(image):
-    image = preprocess(image).unsqueeze(0).to("cpu")
-    with torch.no_grad():
-        return model.encode_image(image).squeeze().cpu().numpy()
-
-def get_art_explanation(results):
-    prompt = f"""
-You are an expert art historian and skilled writer.
-
-Given the painting metadata below, generate a **rich, structured, and beautifully formatted Markdown** explanation with:
-- 🎨 Title and artist as a heading
-- 🖼️ A short paragraph on what it represents
-- 🕰️ When and why it was painted (if known)
-- 🌍 Cultural or historical context
-
-**Return valid Markdown only.**
-
-Metadata:
-- Title: {results['metadata']['title']}
-- Artist: {results['metadata']['artist']}
-- Style: {results['metadata']['style']}
-- Genre: {results['metadata']['genre']}
-"""
-
-    response = client.chat.completions.create(
-        model="gpt-4o-mini",
-        messages=[{"role": "user", "content": prompt}],
-        temperature=0.7
-    )
-    return response.choices[0].message.content
-
+model, preprocess, device = load_clip_model()
 
 # -------------------- STREAMLIT UI --------------------
 
@@ -86,18 +51,17 @@ if uploaded_file:
 
     with col1:
         st.image(image, caption="🖼️ Uploaded Painting", use_container_width=True)
+        
+        preprocessed_image = crop_largest_rect_from_pil(image)
 
+        st.image(preprocessed_image, caption="🖼️ Preprocessed Painting", use_container_width=True)
+        
     with col2:
         with st.spinner("🔍 Searching the model..."):
+            
+            embedding = get_image_embedding(preprocessed_image, model, preprocess, device)
 
-            embedding = get_image_embedding(image)
-
-            query_response = index.query(
-                vector=embedding.tolist(),
-                top_k=1,
-                include_metadata=True,
-                namespace="ns1"
-            )
+            query_response = query_image(embedding, index, top_k=1)
 
         if query_response.matches:
             result = query_response.matches[0]
@@ -114,7 +78,7 @@ if uploaded_file:
             """, unsafe_allow_html=True)
 
             with st.spinner("📚 Asking the art historian..."):
-                explanation = get_art_explanation(result)
+                explanation = get_art_explanation(result, client)
         else:
             st.error("❌ Sorry, no match was found.")
             explanation = None

@@ -85,29 +85,23 @@ def prepare_vectors_from_dataframe(
     vectors = []
     
     for _, row in df.iterrows():
-        # Sanitize filename for use as ID (Pinecone IDs must be ASCII)
-        sanitized_id = str(row[id_col]).encode('ascii', errors='ignore').decode('ascii')
-        
-        # Create metadata dictionary
-        metadata = {col: row[col] for col in metadata_cols if col in row}
-        
-        # Create vector dictionary
-        vector_dict = {
-            "id": sanitized_id,
-            "values": row[embedding_col],
-            "metadata": metadata
-        }
-        
-        vectors.append(vector_dict)
+        sanitized_filename = row["file"].encode('ascii', errors='ignore').decode('ascii')
+        vectors.append({
+            "id": sanitized_filename,  # must be string
+            "values": row["image_embedding"],
+            "metadata": {
+                "title": row["title"],
+                "artist": row["artist"],
+                "style": row["style"],
+                "genre": row["genre"]
+            }
+        })
         
     return vectors
-
 
 def upsert_to_pinecone(
     index: Any, 
     vectors: List[Dict[str, Any]], 
-    namespace: str = "ns1",
-    batch_size: int = 100
 ) -> int:
     """
     Upsert vectors to Pinecone index in batches.
@@ -121,18 +115,12 @@ def upsert_to_pinecone(
     Returns:
         Number of vectors upserted
     """
-    # Upsert in batches to avoid timeouts with large datasets
-    total_vectors = len(vectors)
-    for i in range(0, total_vectors, batch_size):
-        batch = vectors[i:min(i+batch_size, total_vectors)]
-        index.upsert(
-            vectors=batch,
-            namespace=namespace
-        )
-        print(f"Upserted batch {i//batch_size + 1}/{(total_vectors-1)//batch_size + 1} ({len(batch)} vectors)")
+    index.upsert(
+    vectors=vectors,
+    namespace="ns1"
+)
+    print(f"Upserted {len(vectors)} vectors)")
     
-    return total_vectors
-
 
 def query_image(
     image_embedding: List[float],
@@ -186,9 +174,9 @@ def format_query_results(query_response: Dict[str, Any]) -> List[Dict[str, Any]]
 def main():
     """Main function to demonstrate functionality."""
     # Configuration
-    PINECONE_API_KEY = "YOUR_API_KEY_HERE"  # Replace with your actual API key
+    PINECONE_API_KEY = os.getenv("PINECONE_API_KEY")
     INDEX_NAME = "frame-finder-database"
-    EMBEDDINGS_PATH = "./data/wikiart_export/embeddings_data.csv"
+    EMBEDDINGS_PATH = "./data/processed/metadata_embeddings.csv"
     
     # Initialize Pinecone
     pc = initialize_pinecone(PINECONE_API_KEY)
