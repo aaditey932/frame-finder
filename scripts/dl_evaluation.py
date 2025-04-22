@@ -9,24 +9,8 @@ from dl_get_preprocessing import crop_largest_rect_from_pil
 from dl_get_database import initialize_pinecone, create_pinecone_index, query_image
 from dl_get_embeddings import load_clip_model, get_image_embedding
 
-# ------------------- Configuration -------------------
-TEST_FOLDER = "data/raw/testing_images"
-METADATA_PATH = "data/raw/metadata.csv"
-RESULTS_CSV = "data/output/dl_approach_results.csv"
-INDEX_NAME = "frame-finder-database"
-PINECONE_API_KEY = os.getenv("PINECONE_API_KEY")
-TOP_K = 5
-
-# Load metadata
-metadata_df = pd.read_csv(METADATA_PATH)
-
-# Load model and Pinecone
-model, preprocess, device = load_clip_model()
-pc = initialize_pinecone(PINECONE_API_KEY)
-index = create_pinecone_index(pc, INDEX_NAME)
-
 # ------------------- Evaluation Script -------------------
-def evaluate_retrieval(test_folder, model, preprocess, device, index, k=TOP_K):
+def evaluate_retrieval(test_folder, metadata_df, model, preprocess, device, index, k=5):
     recall_scores = []
     hit_scores = []
     avg_precision_scores = []
@@ -104,6 +88,22 @@ def evaluate_retrieval(test_folder, model, preprocess, device, index, k=TOP_K):
     print(f"Mean Average Precision (mAP): {np.mean(avg_precision_scores):.4f}")
     print(f"Average Similarity Score (Top-1): {np.mean(similarity_scores):.4f}")
 
+def main():
+    TEST_FOLDER = "data/raw/testing_images"
+    METADATA_PATH = "data/raw/metadata.csv"
+    RESULTS_CSV = "data/output/dl_approach_results.csv"
+    INDEX_NAME = "frame-finder-database"
+    PINECONE_API_KEY = os.getenv("PINECONE_API_KEY")
+    TOP_K = 5
 
+    # Load metadata
+    metadata_df = pd.read_csv(METADATA_PATH)
+
+    # Load model and Pinecone
+    model, preprocess, device = load_clip_model()
+    pc = initialize_pinecone(PINECONE_API_KEY)
+    index = create_pinecone_index(pc, INDEX_NAME)
+    evaluate_retrieval(TEST_FOLDER, metadata_df, model, preprocess, device, index, k=TOP_K)
+    
 if __name__ == "__main__":
-    evaluate_retrieval(TEST_FOLDER, model, preprocess, device, index, k=TOP_K)
+    main()
