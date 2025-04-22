@@ -18,16 +18,17 @@ if hasattr(torch, 'classes'):
 load_dotenv()
 
 st.set_page_config(page_title="Frame Finder", page_icon="🎨", layout="wide")
+st.set_option('client.showErrorDetails', True)
 
 # Cache OpenAI client
 @st.cache_resource
 def get_openai_client():
-    return OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+    return OpenAI(api_key=st.secrets("OPENAI_API_KEY"))
 
 # Cache Pinecone initialization
 @st.cache_resource
 def get_pinecone_index():
-    pc = initialize_pinecone(os.getenv("PINECONE_API_KEY"))
+    pc = initialize_pinecone(st.secrets("PINECONE_API_KEY"))
     return create_pinecone_index(pc, "frame-finder-database")
 
 # Cache CLIP model loading
