@@ -281,7 +281,7 @@ class MLPaintingPredictor:
             print(f"Error in identification: {e}")
             return []
     
-    def save_model(self, model_path='./models/painting_identifier_ml.pkl'):
+    def save_model(self, model_path='./models/MLPaintingPredictor.pkl'):
         """Save the ML model to a file."""
         os.makedirs(os.path.dirname(model_path), exist_ok=True)
         
@@ -309,261 +309,109 @@ class MLPaintingPredictor:
         
         print(f"Model loaded from {model_path}")
         
-    def evaluate_top_n_accuracy(self, test_dataset, n=5):
-        """
-        Evaluate the model using Top-N accuracy.
-        
-        Args:
-            test_dataset: Dataset of test paintings
-            n: Number of top matches to consider
-            
-        Returns:
-            Accuracy score for Top-N
-        """
-        correct = 0
-        total = 0
-        
-        print(f"Evaluating Top-{n} accuracy...")
-        for example in tqdm(test_dataset):
-            try:
-                # Get actual title
-                actual_title = example['title']
-                
-                # Get predictions
-                matches = self.identify_painting(example['image'])
-                
-                # Check if actual title is in top N predictions
-                predicted_titles = [match['title'] for match in matches[:n]]
-                if actual_title in predicted_titles:
-                    correct += 1
-                
-                total += 1
-            except Exception as e:
-                print(f"Error evaluating example: {e}")
-        
-        accuracy = correct / total if total > 0 else 0
-        print(f"Top-{n} accuracy: {accuracy:.4f} ({correct}/{total})")
-        return accuracy
+def evaluate_ml_approach(test_folder, predictor, metadata_path, results_csv, k=5):
+    """Evaluate the ML approach for painting title prediction."""
+    recall_scores = []
+    hit_scores = []
+    avg_precision_scores = []
+    similarity_scores = []
+    rows = []
     
-    def evaluate_mrr(self, test_dataset):
-        """
-        Evaluate using Mean Reciprocal Rank.
-        
-        Args:
-            test_dataset: Dataset of test paintings
-            
-        Returns:
-            MRR score
-        """
-        reciprocal_ranks = []
-        
-        print("Evaluating Mean Reciprocal Rank...")
-        for example in tqdm(test_dataset):
-            try:
-                # Get actual title
-                actual_title = example['title']
-                
-                # Get predictions
-                matches = self.identify_painting(example['image'])
-                predicted_titles = [match['title'] for match in matches]
-                
-                # Find rank of correct title
-                if actual_title in predicted_titles:
-                    rank = predicted_titles.index(actual_title) + 1
-                    reciprocal_ranks.append(1.0 / rank)
-                else:
-                    reciprocal_ranks.append(0.0)
-                    
-            except Exception as e:
-                print(f"Error evaluating example: {e}")
-                reciprocal_ranks.append(0.0)
-        
-        mrr = np.mean(reciprocal_ranks)
-        print(f"Mean Reciprocal Rank: {mrr:.4f}")
-        return mrr
-
-def evaluate_test_folder(identifier, test_folder, dataset, k=5):
-    """
-    Evaluate model performance on test images from a folder.
+    # Load metadata
+    metadata_df = pd.read_csv(metadata_path)
     
-    Args:
-        identifier: Trained MLPaintingPredictor instance
-        test_folder: Path to folder containing test images
-        dataset: Original dataset for ground truth
-        k: Number of top matches to consider
-    """
-    correct_at_1 = 0
-    correct_at_k = 0
-    total = 0
-    reciprocal_ranks = []
-
-    print("\n🔍 Evaluating model on test folder images...")
-    
-    # Check if folder exists
-    if not os.path.exists(test_folder):
-        print(f"⚠️ Test folder {test_folder} not found!")
-        return
-    
-    # Loop through all test images
     for filename in tqdm(sorted(os.listdir(test_folder))):
-        if not filename.lower().endswith((".jpg", ".jpeg", ".png")):
+        if not filename.endswith((".jpg", ".jpeg", ".png")):
             continue
-
-        try:
-            # Extract ground truth index from filename (e.g., "2_test_4.png" → 2)
-            index = int(filename.split("_")[0])
-            if index >= len(dataset):
-                print(f"⚠️ Index {index} from {filename} is out of dataset range ({len(dataset)})")
-                continue
-                
-            actual_title = dataset[index]["title"]
-
-            # Load image
-            image_path = os.path.join(test_folder, filename)
-            test_image = Image.open(image_path)
-
-            # Predict
-            matches = identifier.identify_painting(test_image)
-            if not matches:
-                print(f"⚠️ No matches found for {filename}")
-                continue
-                
-            top_k_titles = [m['title'] for m in matches[:k]]
-
-            # Evaluation metrics
-            if actual_title == top_k_titles[0]:
-                correct_at_1 += 1
-            if actual_title in top_k_titles:
-                correct_at_k += 1
-                rank = top_k_titles.index(actual_title) + 1
-                reciprocal_ranks.append(1 / rank)
-            else:
-                reciprocal_ranks.append(0)
-
-            total += 1
-
-        except Exception as e:
-            print(f"⚠️ Skipping {filename}: {e}")
-
-    # Results
-    if total == 0:
-        print("No valid test images found!")
-        return None
         
-    print("\n📊 Test Set Evaluation Results:")
-    print(f"Total Images: {total}")
-    top1_acc = correct_at_1 / total
-    topk_acc = correct_at_k / total
-    mrr = np.mean(reciprocal_ranks)
+        try:
+            index_gt = int(filename.split("_")[0])  # e.g., 2_test_3.png -> 2
+            img_path = os.path.join(test_folder, filename)
+            image = Image.open(img_path)
+            
+            # Get matches using ML approach
+            matches = predictor.identify_painting(image)
+            retrieved_titles = [m['title'] for m in matches][:k]  # Limit to top k
+            top1_title = retrieved_titles[0] if retrieved_titles else ""
+            top1_score = matches[0]['score'] if matches else 0.0
+            similarity_scores.append(top1_score)
+            
+            # Ground truth title from metadata.csv
+            ground_truth_title = metadata_df.loc[index_gt, 'title']
+            
+            # Evaluation Metrics
+            hit = int(ground_truth_title in retrieved_titles)
+            recall = 1.0 if ground_truth_title in retrieved_titles else 0.0
+            
+            # Average Precision (AP)
+            ap = 0.0
+            correct = 0
+            for i, title in enumerate(retrieved_titles):
+                if title == ground_truth_title:
+                    correct += 1
+                    ap += correct / (i + 1)
+            ap = ap / correct if correct else 0.0
+            
+            # Save metrics
+            hit_scores.append(hit)
+            recall_scores.append(recall)
+            avg_precision_scores.append(ap)
+            
+            # Save row
+            rows.append({
+                "filename": filename,
+                "ground_truth_title": ground_truth_title,
+                "top1_title": top1_title,
+                "hit@k": hit,
+                "recall@k": recall,
+                "mAP": ap,
+                "top1_similarity_score": top1_score
+            })
+        except Exception as e:
+            print(f"Error processing {filename}: {e}")
+            continue
     
-    print(f"Top-1 Accuracy: {top1_acc:.2%}")
-    print(f"Top-{k} Accuracy: {topk_acc:.2%}")
-    print(f"Mean Reciprocal Rank (MRR): {mrr:.4f}")
+    # Save results to CSV
+    df = pd.DataFrame(rows)
+    df.to_csv(results_csv, index=False)
+    print(f"\n✅ Results saved to {results_csv}")
     
-    # Return metrics as a dict
-    return {
-        'top1_accuracy': top1_acc,
-        'top5_accuracy': topk_acc,
-        'mrr': mrr
-    }
+    # Final summary
+    print("\n📊 Evaluation Summary")
+    print(f"Total Images Evaluated: {len(rows)}")
+    print(f"Top-{k} Accuracy (Hit Rate): {np.mean(hit_scores):.2%}")
+    print(f"Recall@{k}: {np.mean(recall_scores):.4f}")
+    print(f"Mean Average Precision (mAP): {np.mean(avg_precision_scores):.4f}")
+    print(f"Average Similarity Score (Top-1): {np.mean(similarity_scores):.4f}")
 
-def evaluate_ml_approach():
-    """Main function to evaluate the ML approach for painting title prediction."""
-    # Start timing
-    start_time = time.time()
+def main():
+    # Configuration
+    TEST_FOLDER = "data/raw/testing_images"
+    METADATA_PATH = "data/raw/metadata.csv"
+    RESULTS_CSV = "data/output/ml_approach_results.csv"
+    TOP_K = 5
     
-    # Load dataset
+    # Load dataset for building the database
     print("Loading dataset...")
     try:
         ds = load_dataset("Artificio/WikiArt", split='train')
         ds = ds.select(range(100))  # Using 100 samples for evaluation
     except Exception as e:
         print(f"Error loading dataset: {e}")
-        return
+        exit(1)
     
-    # Split dataset for training and validation
-    train_size = int(0.8 * len(ds))
-    train_ds = ds.select(range(train_size))
-    val_ds = ds.select(range(train_size, len(ds)))
+    # Initialize the ML painting predictor
+    predictor = MLPaintingPredictor(n_neighbors=TOP_K)
     
-    print(f"Dataset split: {len(train_ds)} training samples, {len(val_ds)} validation samples")
+    # Build database
+    print("Building database with ML approach...")
+    predictor.build_feature_database(ds)
     
-    # Initialize the painting identifier
-    identifier = MLPaintingPredictor(n_neighbors=5)
+    # Save model
+    predictor.save_model()
     
-    # Check if a pre-trained model exists
-    model_path = './models/MLPaintingPredictor.pkl'
-    if os.path.exists(model_path):
-        print(f"Loading existing model from {model_path}")
-        try:
-            identifier.load_model(model_path)
-        except Exception as e:
-            print(f"Error loading model: {e}")
-            print("Building new model instead...")
-            identifier.build_feature_database(train_ds)
-            identifier.save_model(model_path)
-    else:
-        print("Building features database and training model...")
-        identifier.build_feature_database(train_ds)
-        identifier.save_model(model_path)
-    
-    # Measure training time (or loading time)
-    training_time = time.time() - start_time
-    print(f"Model preparation time: {training_time:.2f} seconds")
-    
-    # Evaluate the model on the validation dataset
-    print("\n=== VALIDATION SET EVALUATION ===")
-    print("\nEvaluating on validation dataset...")
-    val_top1_acc = identifier.evaluate_top_n_accuracy(val_ds, n=1)
-    val_top5_acc = identifier.evaluate_top_n_accuracy(val_ds, n=5)
-    val_mrr = identifier.evaluate_mrr(val_ds)
-    
-    # Evaluate on test folder (external test images)
-    test_folder = "data/raw/testing_images"
-    test_metrics = None
-    if os.path.exists(test_folder):
-        print("\n=== TEST SET EVALUATION ===")
-        test_metrics = evaluate_test_folder(identifier, test_folder, ds, k=5)
-    else:
-        print(f"\nTest folder {test_folder} not found. Skipping test set evaluation.")
-    
-    # Summary of evaluation results
-    print("\n=== EVALUATION SUMMARY ===")
-    print(f"Training time: {training_time:.2f}s")
-    print("\nValidation Set Metrics:")
-    print(f"Validation Set Size: {len(val_ds)}")
-    print(f"Top-1 Accuracy: {val_top1_acc:.4f}")
-    print(f"Top-5 Accuracy: {val_top5_acc:.4f}")
-    print(f"Mean Reciprocal Rank: {val_mrr:.4f}")
-    
-    if test_metrics:
-        print("\nTest Set Metrics:")
-        print(f"Top-1 Accuracy: {test_metrics['top1_accuracy']:.4f}")
-        print(f"Top-5 Accuracy: {test_metrics['top5_accuracy']:.4f}")
-        print(f"Mean Reciprocal Rank: {test_metrics['mrr']:.4f}")
-    
-    # Save results to CSV
-    results = {
-        'Approach': ['ML_Traditional'],
-        'Training_Time': [training_time],
-        'Val_Top1_Accuracy': [val_top1_acc],
-        'Val_Top5_Accuracy': [val_top5_acc],
-        'Val_MRR': [val_mrr]
-    }
-    
-    if test_metrics:
-        results.update({
-            'Test_Top1_Accuracy': [test_metrics['top1_accuracy']],
-            'Test_Top5_Accuracy': [test_metrics['top5_accuracy']],
-            'Test_MRR': [test_metrics['mrr']]
-        })
-    
-    results_df = pd.DataFrame(results)
-    results_df.to_csv('ml_approach_results.csv', index=False)
-    print("\nResults saved to ml_approach_results.csv")
-    
-    return results_df
-
+    # Evaluate
+    evaluate_ml_approach(TEST_FOLDER, predictor, METADATA_PATH, RESULTS_CSV, k=TOP_K)
 
 if __name__ == "__main__":
-    evaluate_ml_approach()
+    main()
