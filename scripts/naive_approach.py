@@ -137,103 +137,110 @@ class NaivePaintingPredictor:
         self.features_df = model_data['features_df']
         print(f"Naive model loaded from {model_path}")
     
-    def evaluate_top_n_accuracy(self, test_dataset, n=5):
-        """Evaluate the model using Top-N accuracy."""
-        correct = 0
-        total = 0
-        
-        print(f"Evaluating Top-{n} accuracy...")
-        for example in tqdm(test_dataset):
-            try:
-                # Get actual title
-                actual_title = example['title']
-                
-                # Get predictions
-                matches = self.identify_painting(example['image'])
-                
-                # Check if actual title is in top N predictions
-                predicted_titles = [match['title'] for match in matches[:n]]
-                if actual_title in predicted_titles:
-                    correct += 1
-                
-                total += 1
-            except Exception as e:
-                print(f"Error evaluating example: {e}")
-        
-        accuracy = correct / total if total > 0 else 0
-        print(f"Top-{n} accuracy: {accuracy:.4f} ({correct}/{total})")
-        return accuracy
-    
-    def evaluate_mrr(self, test_dataset):
-        """Evaluate using Mean Reciprocal Rank."""
-        reciprocal_ranks = []
-        
-        print("Evaluating Mean Reciprocal Rank...")
-        for example in tqdm(test_dataset):
-            try:
-                # Get actual title
-                actual_title = example['title']
-                
-                # Get predictions
-                matches = self.identify_painting(example['image'])
-                predicted_titles = [match['title'] for match in matches]
-                
-                # Find rank of correct title
-                if actual_title in predicted_titles:
-                    rank = predicted_titles.index(actual_title) + 1
-                    reciprocal_ranks.append(1.0 / rank)
-                else:
-                    reciprocal_ranks.append(0.0)
-                    
-            except Exception as e:
-                print(f"Error evaluating example: {e}")
-                reciprocal_ranks.append(0.0)
-        
-        mrr = np.mean(reciprocal_ranks)
-        print(f"Mean Reciprocal Rank: {mrr:.4f}")
-        return mrr
 
-def evaluate_naive_approach():
+def evaluate_naive_approach(test_folder, predictor, metadata_path, results_csv, k=5):
     """Evaluate the naive approach for painting title prediction."""
-    # Load dataset
+    recall_scores = []
+    hit_scores = []
+    avg_precision_scores = []
+    similarity_scores = []
+    rows = []
+    
+    # Load metadata
+    metadata_df = pd.read_csv(metadata_path)
+    
+    for filename in tqdm(sorted(os.listdir(test_folder))):
+        if not filename.endswith((".jpg", ".jpeg", ".png")):
+            continue
+        
+        try:
+            index_gt = int(filename.split("_")[0])  # e.g., 2_test_3.png -> 2
+            img_path = os.path.join(test_folder, filename)
+            image = Image.open(img_path)
+            
+            # Get matches using naive approach
+            matches = predictor.identify_painting(image)
+            retrieved_titles = [m['title'] for m in matches][:k]  # Limit to top k
+            top1_title = retrieved_titles[0] if retrieved_titles else ""
+            top1_score = matches[0]['score'] if matches else 0.0
+            similarity_scores.append(top1_score)
+            
+            # Ground truth title from metadata.csv
+            ground_truth_title = metadata_df.loc[index_gt, 'title']
+            
+            # Evaluation Metrics
+            hit = int(ground_truth_title in retrieved_titles)
+            recall = 1.0 if ground_truth_title in retrieved_titles else 0.0
+            
+            # Average Precision (AP)
+            ap = 0.0
+            correct = 0
+            for i, title in enumerate(retrieved_titles):
+                if title == ground_truth_title:
+                    correct += 1
+                    ap += correct / (i + 1)
+            ap = ap / correct if correct else 0.0
+            
+            # Save metrics
+            hit_scores.append(hit)
+            recall_scores.append(recall)
+            avg_precision_scores.append(ap)
+            
+            # Save row
+            rows.append({
+                "filename": filename,
+                "ground_truth_title": ground_truth_title,
+                "top1_title": top1_title,
+                "hit@k": hit,
+                "recall@k": recall,
+                "mAP": ap,
+                "top1_similarity_score": top1_score
+            })
+        except Exception as e:
+            print(f"Error processing {filename}: {e}")
+            continue
+    
+    # Save results to CSV
+    df = pd.DataFrame(rows)
+    df.to_csv(results_csv, index=False)
+    print(f"\n✅ Results saved to {results_csv}")
+    
+    # Final summary
+    print("\n📊 Evaluation Summary")
+    print(f"Total Images Evaluated: {len(rows)}")
+    print(f"Top-{k} Accuracy (Hit Rate): {np.mean(hit_scores):.2%}")
+    print(f"Recall@{k}: {np.mean(recall_scores):.4f}")
+    print(f"Mean Average Precision (mAP): {np.mean(avg_precision_scores):.4f}")
+    print(f"Average Similarity Score (Top-1): {np.mean(similarity_scores):.4f}")
+
+def main():
+    # Configuration
+    TEST_FOLDER = "data/raw/testing_images"
+    METADATA_PATH = "data/raw/metadata.csv"
+    RESULTS_CSV = "data/output/naive_approach_results.csv"
+    TOP_K = 5
+    
+    # Load dataset for building the database
     print("Loading dataset...")
     try:
         ds = load_dataset("Artificio/WikiArt", split='train')
         ds = ds.select(range(100))  # Using 100 samples for evaluation
     except Exception as e:
         print(f"Error loading dataset: {e}")
-        return
-    
-    # Split dataset for training and testing
-    train_size = int(0.8 * len(ds))
-    train_ds = ds.select(range(train_size))
-    test_ds = ds.select(range(train_size, len(ds)))
-    
-    print(f"Dataset split: {len(train_ds)} training samples, {len(test_ds)} testing samples")
+        exit(1)
     
     # Initialize the naive painting predictor
-    predictor = NaivePaintingPredictor(n_neighbors=5)
+    predictor = NaivePaintingPredictor(n_neighbors=TOP_K)
     
     # Build database
     print("Building database with naive approach...")
-    predictor.build_database(train_ds)
-
+    predictor.build_database(ds)
+    
     # Save model
     predictor.save_model()
     
     # Evaluate
-    print("\n=== NAIVE APPROACH EVALUATION ===")
-    top1_acc = predictor.evaluate_top_n_accuracy(test_ds, n=1)
-    top5_acc = predictor.evaluate_top_n_accuracy(test_ds, n=5)
-    mrr = predictor.evaluate_mrr(test_ds)
+    evaluate_naive_approach(TEST_FOLDER, predictor, METADATA_PATH, RESULTS_CSV, k=TOP_K)
     
-    # Summary
-    print("\n=== EVALUATION SUMMARY (NAIVE APPROACH) ===")
-    print(f"Test Dataset Size: {len(test_ds)}")
-    print(f"Top-1 Accuracy: {top1_acc:.4f}")
-    print(f"Top-5 Accuracy: {top5_acc:.4f}")
-    print(f"Mean Reciprocal Rank: {mrr:.4f}")
-
-
 if __name__ == "__main__":
-    evaluate_naive_approach()
+    main()
