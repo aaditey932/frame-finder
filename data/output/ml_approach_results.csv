@@ -1,0 +1,11 @@
+filename,ground_truth_title,top1_title,hit@k,recall@k,mAP,top1_similarity_score
+0_test_1.png,Cornelia Street,Cornelia Street,1,1.0,1.0,0.9060164155572479
+0_test_2.png,Cornelia Street,Study of a Male Nude,0,0.0,0.0,0.683031586175362
+0_test_3.png,Cornelia Street,Céline's Notebook,0,0.0,0.0,0.6397683992134351
+0_test_4.png,Cornelia Street,Céline's Notebook,0,0.0,0.0,0.6906721487673724
+0_test_5.png,Cornelia Street,A Classical Landscape ,0,0.0,0.0,0.641835869553633
+2_test_1.png,Milking the Cow ,The Bay of Naples in the morning,0,0.0,0.0,0.5196931847865383
+2_test_2.png,Milking the Cow ,The voice of space,0,0.0,0.0,0.5769584342746883
+2_test_3.png,Milking the Cow ,The Piazza San Marco towards the Basilica,0,0.0,0.0,0.5553152583008444
+2_test_4.png,Milking the Cow , Peasant with a violin,1,1.0,0.3333333333333333,0.53979235446793
+2_test_5.png,Milking the Cow ,Edge of forest,1,1.0,0.3333333333333333,0.7068131925094603
