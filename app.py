@@ -3,11 +3,19 @@ from PIL import Image
 import os
 from openai import OpenAI
 from dotenv import load_dotenv
+import sys
+import torch
 
 from scripts.dl_get_preprocessing import crop_largest_rect_from_pil
 from scripts.dl_get_database import initialize_pinecone, create_pinecone_index, query_image
 from scripts.dl_get_embeddings import load_clip_model, get_image_embedding
 from scripts.dl_get_llm import get_art_explanation
+
+
+
+# Prevent Streamlit from accessing torch.classes and crashing
+if hasattr(torch, 'classes'):
+    delattr(torch, 'classes')
 
 load_dotenv()
 
