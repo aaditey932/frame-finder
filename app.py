@@ -39,7 +39,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 st.markdown("<div class='title'>🎨 Frame Finder – AI Art Identifier</div>", unsafe_allow_html=True)
-st.markdown("<div class='subtitle'>Upload a painting and we'll tell you its story</div>", unsafe_allow_html=True)
+st.markdown("<div class='subtitle'>Frame-Finder is like Shazam for paintings — just snap a photo of any artwork, and the system will identify it. \n Upload a painting and we'll tell you its story</div>", unsafe_allow_html=True)
 st.markdown("")
 
 uploaded_file = st.file_uploader("📤 Upload a painting", type=["jpg", "jpeg", "png"])
