@@ -159,17 +159,22 @@ To assess the performance of each approach, we used a test set of user-uploaded 
 | ML – Traditional Features   |   `30.00%`   |  `0.3000`   | `0.1617` |        `0.4810`          |
 | Deep Learning (CLIP + DB)   |   `95.00%`   |  `0.9500`   | `0.9500` |        `0.8900`          |
 
----
-
 ### 🧠 Insights
 
 - **Naïve Approach** tends to perform poorly on complex or cropped images, but can still be useful for very distinctive artworks.
 - **ML Approach** offers balanced performance and is more robust to partial inputs due to the variety of features used (color, texture, edge, layout).
 - **CLIP + Pinecone** consistently performs best in terms of both accuracy and explanation, making it ideal for real-time art recognition.
+- 
 ---
 
-### Deployed App Link
+## 🚀 Try the Live App
 
+Want to see Frame-Finder in action?  
+Upload any painting and get instant recognition and an AI-generated explanation.
+
+👉 **[Launch the App](https://frame-finder-ai.streamlit.app)**
+
+---
 
 ## 🎨 Sample Use Case
 
