@@ -151,8 +151,6 @@ To assess the performance of each approach, we used a test set of user-uploaded 
 | **Mean Average Precision (mAP)** | Average precision across positions where correct items are found       |
 | **Top-1 Similarity Score** | Similarity score of the best-ranked painting (0 to 1, higher is better) |
 
----
-
 ### 🧪 Results Overview
 
 | Approach                    | Hit@5 (%) | Recall@5 | mAP    | Average Top-1 Similarity |
