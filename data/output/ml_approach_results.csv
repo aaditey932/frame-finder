@@ -1,11 +1,21 @@
 filename,ground_truth_title,top1_title,hit@k,recall@k,mAP,top1_similarity_score
-0_test_1.png,Cornelia Street,Cornelia Street,1,1.0,1.0,0.9060164155572479
-0_test_2.png,Cornelia Street,Study of a Male Nude,0,0.0,0.0,0.683031586175362
-0_test_3.png,Cornelia Street,Céline's Notebook,0,0.0,0.0,0.6397683992134351
-0_test_4.png,Cornelia Street,Céline's Notebook,0,0.0,0.0,0.6906721487673724
-0_test_5.png,Cornelia Street,A Classical Landscape ,0,0.0,0.0,0.641835869553633
+0_test_1.png,Cornelia Street,A Classical Landscape ,0,0.0,0.0,0.641835869553633
+16_test_1.png,The Embankment of Lagny under Flood Water, Peasant with a violin,0,0.0,0.0,0.33293865792113064
+16_test_2.png,The Embankment of Lagny under Flood Water,The voice of space,0,0.0,0.0,0.47453229606459824
+1_test_1.png,"O Diabo, a Paraquedista, Etc","O Diabo, a Paraquedista, Etc",1,1.0,1.0,0.4066064110809975
+1_test_2.png,"O Diabo, a Paraquedista, Etc", Peasant with a violin,1,1.0,0.5,0.48336200382682504
+21_test_1.png,Portrait of Margarita Savina, Peasant with a violin,0,0.0,0.0,0.4273567273906531
+24_test_1.png,"Venice: The Grand Canal, Looking North East from Palazzo Balbi to the Rialto Bridge",Vertical and horizontal composition,0,0.0,0.0,0.3433997186772666
+24_test_2.png,"Venice: The Grand Canal, Looking North East from Palazzo Balbi to the Rialto Bridge", Peasant with a violin,1,1.0,0.2,0.58958208090957
+26_test_1.png,Study of a Male Nude,Study of a Male Nude,1,1.0,1.0,0.6020874212365417
+26_test_2.png,Study of a Male Nude,Love and Death,1,1.0,0.3333333333333333,0.4954239371150321
+28_test_1.png,Burlesque, Peasant with a violin,0,0.0,0.0,0.5964631594579253
+28_test_2.png,Burlesque, Peasant with a violin,0,0.0,0.0,0.473063326763811
 2_test_1.png,Milking the Cow ,The Bay of Naples in the morning,0,0.0,0.0,0.5196931847865383
-2_test_2.png,Milking the Cow ,The voice of space,0,0.0,0.0,0.5769584342746883
-2_test_3.png,Milking the Cow ,The Piazza San Marco towards the Basilica,0,0.0,0.0,0.5553152583008444
-2_test_4.png,Milking the Cow , Peasant with a violin,1,1.0,0.3333333333333333,0.53979235446793
-2_test_5.png,Milking the Cow ,Edge of forest,1,1.0,0.3333333333333333,0.7068131925094603
+4_test_1.png,All healing, Peasant with a violin,0,0.0,0.0,0.37107424884767526
+4_test_2.png,All healing, Peasant with a violin,0,0.0,0.0,0.38603435766324634
+5_test_1.png,"A fresco by M. Nesterov from Akhali Zarzma monastery, Abastumani, Georgia",Man and Woman,1,1.0,0.2,0.4861358188998409
+5_test_2.png,"A fresco by M. Nesterov from Akhali Zarzma monastery, Abastumani, Georgia",Mountain Lake,0,0.0,0.0,0.5608855964024126
+7_test_1.png,Sketch of figures and scenes from the antique age,Vertical and horizontal composition,0,0.0,0.0,0.5496204582505774
+8_test_1.png,The Horsemen of the Apocalypse ,Crucifixion ,0,0.0,0.0,0.36799967378531373
+8_test_2.png,The Horsemen of the Apocalypse ,Study of a Male Nude,0,0.0,0.0,0.5109120158402282

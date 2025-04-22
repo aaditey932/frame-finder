@@ -1,11 +1,21 @@
 filename,ground_truth_title,top1_title,hit@k,recall@k,mAP,top1_similarity_score
-0_test_1.png,Cornelia Street,Cornelia Street,1,1.0,1.0,0.911474
-0_test_2.png,Cornelia Street,Cornelia Street,1,1.0,1.0,0.936854959
-0_test_3.png,Cornelia Street,Cornelia Street,1,1.0,1.0,0.936854959
-0_test_4.png,Cornelia Street,Cornelia Street,1,1.0,1.0,0.936854959
-0_test_5.png,Cornelia Street,Cornelia Street,1,1.0,1.0,0.877606869
+0_test_1.png,Cornelia Street,Cornelia Street,1,1.0,1.0,0.877606869
+16_test_1.png,The Embankment of Lagny under Flood Water,The Embankment of Lagny under Flood Water,1,1.0,1.0,0.866185963
+16_test_2.png,The Embankment of Lagny under Flood Water,The Embankment of Lagny under Flood Water,1,1.0,1.0,0.904562652
+1_test_1.png,"O Diabo, a Paraquedista, Etc","O Diabo, a Paraquedista, Etc",1,1.0,1.0,0.95064795
+1_test_2.png,"O Diabo, a Paraquedista, Etc","O Diabo, a Paraquedista, Etc",1,1.0,1.0,0.944672704
+21_test_1.png,Portrait of Margarita Savina,Portrait of Margarita Savina,1,1.0,1.0,0.896445096
+24_test_1.png,"Venice: The Grand Canal, Looking North East from Palazzo Balbi to the Rialto Bridge","Venice: The Grand Canal, Looking North East from Palazzo Balbi to the Rialto Bridge",1,1.0,1.0,0.803103089
+24_test_2.png,"Venice: The Grand Canal, Looking North East from Palazzo Balbi to the Rialto Bridge","Venice: The Grand Canal, Looking North East from Palazzo Balbi to the Rialto Bridge",1,1.0,1.0,0.920641541
+26_test_1.png,Study of a Male Nude,Study of a Male Nude,1,1.0,1.0,0.938724101
+26_test_2.png,Study of a Male Nude,Untitled,0,0.0,0.0,0.688171625
+28_test_1.png,Burlesque,Burlesque,1,1.0,1.0,0.936049879
+28_test_2.png,Burlesque,Burlesque,1,1.0,1.0,0.938183725
 2_test_1.png,Milking the Cow ,Milking the Cow ,1,1.0,1.0,0.762209654
-2_test_2.png,Milking the Cow ,Milking the Cow ,1,1.0,1.0,0.789978445
-2_test_3.png,Milking the Cow ,Milking the Cow ,1,1.0,1.0,0.90390563
-2_test_4.png,Milking the Cow ,Milking the Cow ,1,1.0,1.0,0.979905665
-2_test_5.png,Milking the Cow ,Milking the Cow ,1,1.0,1.0,0.724856317
+4_test_1.png,All healing,All healing,1,1.0,1.0,0.901147068
+4_test_2.png,All healing,All healing,1,1.0,1.0,0.938378751
+5_test_1.png,"A fresco by M. Nesterov from Akhali Zarzma monastery, Abastumani, Georgia","A fresco by M. Nesterov from Akhali Zarzma monastery, Abastumani, Georgia",1,1.0,1.0,0.932887137
+5_test_2.png,"A fresco by M. Nesterov from Akhali Zarzma monastery, Abastumani, Georgia","A fresco by M. Nesterov from Akhali Zarzma monastery, Abastumani, Georgia",1,1.0,1.0,0.929379046
+7_test_1.png,Sketch of figures and scenes from the antique age,Sketch of figures and scenes from the antique age,1,1.0,1.0,0.894434631
+8_test_1.png,The Horsemen of the Apocalypse ,The Horsemen of the Apocalypse ,1,1.0,1.0,0.872457206
+8_test_2.png,The Horsemen of the Apocalypse ,The Horsemen of the Apocalypse ,1,1.0,1.0,0.903837085

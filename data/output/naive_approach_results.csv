@@ -1,11 +1,21 @@
 filename,ground_truth_title,top1_title,hit@k,recall@k,mAP,top1_similarity_score
-0_test_1.png,Cornelia Street,Cornelia Street,1,1.0,1.0,19.000891994932317
-0_test_2.png,Cornelia Street,A Classical Landscape ,0,0.0,0.0,7.7965613648993894
-0_test_3.png,Cornelia Street,St Nicholas,0,0.0,0.0,8.789662192146352
-0_test_4.png,Cornelia Street,A Classical Landscape ,0,0.0,0.0,9.083942108140036
-0_test_5.png,Cornelia Street,St Nicholas,0,0.0,0.0,18.934847034077393
+0_test_1.png,Cornelia Street,St Nicholas,0,0.0,0.0,18.934847034077393
+16_test_1.png,The Embankment of Lagny under Flood Water,Scheherazade la sultane bleue  ,0,0.0,0.0,11.640481512797123
+16_test_2.png,The Embankment of Lagny under Flood Water,Burlesque,0,0.0,0.0,13.109740246931324
+1_test_1.png,"O Diabo, a Paraquedista, Etc",Dos ulls i paparina,0,0.0,0.0,9.070915343414526
+1_test_2.png,"O Diabo, a Paraquedista, Etc",Sunflowers  ,0,0.0,0.0,6.9442065923067275
+21_test_1.png,Portrait of Margarita Savina,"Portrait of the Artist's Niece, Dorothy",0,0.0,0.0,11.940347893396392
+24_test_1.png,"Venice: The Grand Canal, Looking North East from Palazzo Balbi to the Rialto Bridge",Summer Day,0,0.0,0.0,13.38861218540842
+24_test_2.png,"Venice: The Grand Canal, Looking North East from Palazzo Balbi to the Rialto Bridge","Portrait of the Artist's Niece, Dorothy",0,0.0,0.0,11.490378795235301
+26_test_1.png,Study of a Male Nude,Burlesque,0,0.0,0.0,21.162249716027873
+26_test_2.png,Study of a Male Nude,Summer Day,0,0.0,0.0,12.799940379685722
+28_test_1.png,Burlesque,Dos ulls i paparina,0,0.0,0.0,6.919207758393895
+28_test_2.png,Burlesque,Christ Showing A Little Child As The Emblem Of Heaven,0,0.0,0.0,4.609596427409997
 2_test_1.png,Milking the Cow ,Raznoschitsa ,0,0.0,0.0,9.373046225999133
-2_test_2.png,Milking the Cow ,St Nicholas,0,0.0,0.0,12.65131009821198
-2_test_3.png,Milking the Cow ,Summer Day,0,0.0,0.0,9.322603421634994
-2_test_4.png,Milking the Cow ,Don Quixote,1,1.0,0.3333333333333333,4.497188639215892
-2_test_5.png,Milking the Cow ,Straits of Malacca,0,0.0,0.0,8.200985014729667
+4_test_1.png,All healing,"Portrait of the Artist's Niece, Dorothy",0,0.0,0.0,9.276593186528771
+4_test_2.png,All healing,A Morning River Scene,0,0.0,0.0,7.078764454967313
+5_test_1.png,"A fresco by M. Nesterov from Akhali Zarzma monastery, Abastumani, Georgia",Burlesque,0,0.0,0.0,18.563745131730684
+5_test_2.png,"A fresco by M. Nesterov from Akhali Zarzma monastery, Abastumani, Georgia",Untitled,0,0.0,0.0,14.890390919346828
+7_test_1.png,Sketch of figures and scenes from the antique age,Burlesque,0,0.0,0.0,15.254084599233465
+8_test_1.png,The Horsemen of the Apocalypse ,Burlesque,0,0.0,0.0,13.251973426100449
+8_test_2.png,The Horsemen of the Apocalypse ,Untitled,0,0.0,0.0,11.32188948453404
